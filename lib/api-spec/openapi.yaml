@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Nero Bakery API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: menu
+    description: Menu browsing and ratings
+  - name: orders
+    description: Bulk order and catering requests
 paths:
   /healthz:
     get:
@@ -24,6 +28,168 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /menu-items:
+    get:
+      operationId: listMenuItems
+      tags: [menu]
+      summary: List menu items
+      description: Returns all menu items, optionally filtered by category and sorted
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/MenuCategory"
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [name, rating, price]
+      responses:
+        "200":
+          description: List of menu items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItemList"
+
+  /menu-items/{id}:
+    get:
+      operationId: getMenuItem
+      tags: [menu]
+      summary: Get a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Menu item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MenuItem"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /menu-items/{id}/ratings:
+    get:
+      operationId: listMenuItemRatings
+      tags: [menu]
+      summary: List ratings for a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of ratings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RatingList"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createMenuItemRating
+      tags: [menu]
+      summary: Rate a menu item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingInput"
+      responses:
+        "201":
+          description: Created rating
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /catering-orders:
+    post:
+      operationId: createCateringOrder
+      tags: [orders]
+      summary: Submit a bulk order or catering request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CateringOrderInput"
+      responses:
+        "201":
+          description: Created order request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CateringOrder"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /catering-orders/{id}:
+    get:
+      operationId: getCateringOrder
+      tags: [orders]
+      summary: Look up a submitted order request by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CateringOrder"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +200,220 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MenuCategory:
+      type: string
+      enum:
+        - bread
+        - pastries
+        - cakes
+        - coffee
+        - sandwiches
+        - seasonal
+
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        category:
+          $ref: "#/components/schemas/MenuCategory"
+        imageUrl:
+          type: ["string", "null"]
+        isAvailable:
+          type: boolean
+        averageRating:
+          type: number
+        ratingCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - description
+        - price
+        - category
+        - imageUrl
+        - isAvailable
+        - averageRating
+        - ratingCount
+        - createdAt
+
+    MenuItemList:
+      type: array
+      items:
+        $ref: "#/components/schemas/MenuItem"
+
+    Rating:
+      type: object
+      properties:
+        id:
+          type: string
+        menuItemId:
+          type: string
+        rating:
+          type: integer
+        comment:
+          type: ["string", "null"]
+        authorName:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - menuItemId
+        - rating
+        - comment
+        - authorName
+        - createdAt
+
+    RatingList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Rating"
+
+    RatingInput:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        authorName:
+          type: string
+      required:
+        - rating
+
+    CateringOrderItem:
+      type: object
+      properties:
+        menuItemId:
+          type: string
+        itemName:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - menuItemId
+        - itemName
+        - quantity
+
+    CateringOrderItemInput:
+      type: object
+      properties:
+        menuItemId:
+          type: string
+        itemName:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+      required:
+        - menuItemId
+        - itemName
+        - quantity
+
+    OrderType:
+      type: string
+      enum:
+        - bulk
+        - catering
+
+    OrderStatus:
+      type: string
+      enum:
+        - pending
+        - confirmed
+        - completed
+        - cancelled
+
+    CateringOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        customerName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        orderType:
+          $ref: "#/components/schemas/OrderType"
+        eventDate:
+          type: string
+          format: date
+        guestCount:
+          type: ["integer", "null"]
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CateringOrderItem"
+        notes:
+          type: ["string", "null"]
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customerName
+        - email
+        - phone
+        - orderType
+        - eventDate
+        - guestCount
+        - items
+        - notes
+        - status
+        - createdAt
+
+    CateringOrderInput:
+      type: object
+      properties:
+        customerName:
+          type: string
+          minLength: 1
+        email:
+          type: string
+        phone:
+          type: string
+        orderType:
+          $ref: "#/components/schemas/OrderType"
+        eventDate:
+          type: string
+          format: date
+        guestCount:
+          type: integer
+          minimum: 1
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CateringOrderItemInput"
+        notes:
+          type: string
+      required:
+        - customerName
+        - email
+        - orderType
+        - eventDate
+        - items

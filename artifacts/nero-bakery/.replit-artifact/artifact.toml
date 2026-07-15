@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Nero Bakery"
+version = "1.0.0"
+id = "artifacts/nero-bakery"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22345
+
+[services.development]
+run = "pnpm --filter @workspace/nero-bakery run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nero-bakery", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/nero-bakery/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22345"
+BASE_PATH = "/"
