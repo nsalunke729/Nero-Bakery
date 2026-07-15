@@ -171,10 +171,10 @@ export default function Catering() {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-6 w-6 text-primary mt-0.5" />
                     <div>
-                      <CardTitle className="text-xl">Order Submitted Successfully!</CardTitle>
+                      <CardTitle className="text-xl">Sláinte! Order Submitted Successfully!</CardTitle>
                       <CardDescription className="mt-2">
                         Your confirmation ID is:{' '}
-                        <span className="font-mono font-bold text-foreground">{submittedOrderId}</span>
+                        <span className="font-mono font-bold text-foreground break-all">{submittedOrderId}</span>
                       </CardDescription>
                       <p className="text-sm text-muted-foreground mt-2">
                         We'll contact you within 24 hours to confirm details. Save this ID to check your order status below.
@@ -318,16 +318,16 @@ export default function Catering() {
                         {selectedItems.map((item) => (
                           <div
                             key={item.menuItemId}
-                            className="flex items-center justify-between p-3 border border-border rounded-lg"
+                            className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 border border-border rounded-lg"
                             data-testid={`order-item-${item.menuItemId}`}
                           >
-                            <div className="flex-1">
-                              <p className="font-medium">{item.itemName}</p>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium break-words">{item.itemName}</p>
                               <p className="text-sm text-muted-foreground">
                                 €{item.price.toFixed(2)} each
                               </p>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between sm:justify-end gap-3">
                               <div className="flex items-center gap-2">
                                 <Button
                                   type="button"
@@ -351,14 +351,14 @@ export default function Catering() {
                                   +
                                 </Button>
                               </div>
-                              <span className="w-20 text-right font-bold">
+                              <span className="w-16 sm:w-20 text-right font-bold shrink-0">
                                 €{(item.price * item.quantity).toFixed(2)}
                               </span>
                               <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 shrink-0"
                                 onClick={() => handleRemoveItem(item.menuItemId)}
                                 data-testid={`button-remove-${item.menuItemId}`}
                               >

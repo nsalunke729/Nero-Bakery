@@ -93,7 +93,7 @@ export default function About() {
 
           <div className="space-y-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-              Visit Us
+              Fáilte — Visit Us
             </h2>
             <p className="text-muted-foreground leading-relaxed">
               We're located in Sandyford Business Park, just off the Luas Green Line. 

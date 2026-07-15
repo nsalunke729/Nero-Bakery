@@ -13,7 +13,7 @@ export function Footer() {
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
               Crafting sourdough, laminated pastries, and celebration cakes for Sandyford, Dublin since 2019. 
-              Every loaf tells a story.
+              Every loaf tells a story. Sláinte!
             </p>
           </div>
 

@@ -16,10 +16,13 @@ export default function Home() {
         <div className="container px-4 md:px-8 py-16 md:py-24 lg:py-32">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="space-y-6 md:space-y-8">
+              <p className="text-xs sm:text-sm font-semibold text-primary/70 tracking-[0.2em] uppercase">
+                Fáilte — Welcome
+              </p>
               <div className="inline-block">
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
-                  <Star className="h-4 w-4" />
-                  Sandyford's Favourite Since 2019
+                  <Star className="h-4 w-4 shrink-0" />
+                  <span>Sandyford's Favourite Since 2019</span>
                 </span>
               </div>
               
@@ -52,7 +55,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative lg:h-[600px]">
+            <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-[600px]">
               <img
                 src="/hero-sourdough.jpg"
                 alt="Artisan sourdough bread"

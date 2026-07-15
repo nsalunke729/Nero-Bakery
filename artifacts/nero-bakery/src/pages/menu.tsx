@@ -113,7 +113,7 @@ export default function Menu() {
         onSuccess: () => {
           toast({
             title: 'Rating submitted',
-            description: 'Thank you for your feedback!',
+            description: 'Go raibh maith agat — thank you for your feedback!',
           });
           setShowRatingForm(false);
           setRatingValue(5);
@@ -205,12 +205,12 @@ export default function Menu() {
           ) : selectedItem ? (
             <>
               <DialogHeader>
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <DialogTitle className="text-2xl md:text-3xl font-display mb-2">
+                <div className="flex items-start justify-between gap-4 pr-8">
+                  <div className="flex-1 min-w-0">
+                    <DialogTitle className="text-2xl md:text-3xl font-display mb-2 break-words">
                       {selectedItem.name}
                     </DialogTitle>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="outline" className="text-sm">
                         {selectedItem.category}
                       </Badge>
@@ -221,9 +221,6 @@ export default function Menu() {
                       )}
                     </div>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={handleCloseDialog} data-testid="button-close-dialog">
-                    <X className="h-5 w-5" />
-                  </Button>
                 </div>
               </DialogHeader>
 
